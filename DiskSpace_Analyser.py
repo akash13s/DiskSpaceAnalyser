@@ -8,6 +8,7 @@ import pandas as pd
 
 def get_size(start_path):
     total_size = 0
+
     for dirpath, dirnames, filenames in os.walk(start_path):
         for f in filenames:
             fp = os.path.join(dirpath, f)
@@ -21,8 +22,12 @@ def show_FileName_and_Size(link):
     for files in os.listdir(link):
         path=link+'\\'+files
         size=get_size(path)
-        arr.append(size/(1024*1024*1024))
-        #print(files+"--->"+str(size/(1024*1024*1024))+" GB")
+        arr.append(size/(1024*1024))
+
+def show_percentage(link):
+    total=sum(arr)
+    for i in arr:
+        perc.append((i/total)*100)
 
 def display_stats(link):
     show_FileName_and_Size(link)
@@ -50,50 +55,52 @@ def display_stats(link):
     plt.ylabel('File Name')
     plt.title('Directory Space Usage Analysis')
     plt.show()
-    
 
 dirpath=input('enter the path of directory')
 dirpath.replace(':\\',':\\\\')
 if os.path.exists(dirpath) is False:
-	print('incorrect directory path')
+    print('incorrect directory path')
 else:
-	path=dirpath
-	arr=[]
-	display_stats(path)
+    path=dirpath
+    arr=[]
+    perc=[]
+    display_stats(path)
+    for i in range(1,1000):
+        op=input('enter your choice:1-child,2-parent,3-delete a subdirectory within the current directory,4-delete a file within the current directory,5-exit:')
+        if op=='1':
+            ch=input('enter the folder name:')
 
-
-	for i in range(1,1000):
-    	op=input('enter your choice:1-child,2-parent,3-delete a subdirectory within the current directory,4-delete a file within the current directory,5-exit:')
-    	if op=='1':
-        	ch=input('enter the folder name')
-
-        	if os.path.exists(path+'\\'+ch) is False:
-            print('Incorrect folder name')
-        	else:
-            	path=path+'\\'+ch
-            	arr=[]
-            	display_stats(path)
-    	elif op=='2':
-        	path=path[:path.rfind('\\')]
-        	arr=[]
-        	display_stats(path)
-    	elif op=='3':
-        	subdir_name=input('enter the name of subdirectory to be deleted')
-        	if os.path.exists(path+'\\'+subdir_name) is False:
-            	print('incorrect subdirectory name')
-        	else:
-            	shutil.rmtree(path+'\\'+subdir_name)
-            	arr=[]
-            	display_stats(path)
-    	elif op=='4':
-        	file_name=input('enter the name of file to be deleted')
-        	if os.path.exists(path+'\\'+file_name) is False:
-            	print('incorrect file name')
-        	else:
-            	os.remove(path+'\\'+file_name)
-            	arr=[]
-            	display_stats(path)
-    	elif op=='5':
-        	break
-    	else:
-        	print('wrong choice entered')
+            if os.path.exists(path+'\\'+ch) is False:
+                print('Incorrect folder name')
+            else:
+                path=path+'\\'+ch
+                arr=[]
+                perc=[]
+                display_stats(path)
+        elif op=='2':
+            path=path[:path.rfind('\\')]
+            arr=[]
+            perc=[]
+            display_stats(path)
+        elif op=='3':
+            subdir_name=input('enter the name of subdirectory to be deleted:')
+            if os.path.exists(path+'\\'+subdir_name) is False:
+                print('incorrect subdirectory name')
+            else:
+                shutil.rmtree(path+'\\'+subdir_name)
+                arr=[]
+                perc=[]
+                display_stats(path)
+        elif op=='4':
+            file_name=input('enter the name of file to be deleted:')
+            if os.path.exists(path+'\\'+file_name) is False:
+                print('incorrect file name')
+            else:
+                os.remove(path+'\\'+file_name)
+                arr=[]
+                perc=[]
+                display_stats(path)
+        elif op=='5':
+            break
+        else:
+            print('wrong choice entered')
